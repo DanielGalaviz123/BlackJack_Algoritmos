@@ -11,6 +11,8 @@ public class CartaInglesa extends Carta {
         super(valor, figura, color);
     }
 
+
+    //por el momento creo que esto no se tocara
     @Override
     public int compareTo(Carta o) {
         // Ambas cartas son iguales

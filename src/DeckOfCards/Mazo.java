@@ -24,12 +24,15 @@ public class Mazo {
         return cartas;
     }
 
+
     public CartaInglesa obtenerUnaCarta() {
         if (cartas.size() > 0) {
             return cartas.remove(0);
         }
         return null;
     }
+
+
     private void mezclar() {
         Collections.shuffle(cartas);
     }

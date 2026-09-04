@@ -1,0 +1,66 @@
+REGLAS DEL BLACKJACK
+
+OBJETIVO
+
+El objetivo del Blackjack es conseguir un valor de cartas lo más cercano posible a 21 sin superar esa cantidad. Los jugadores compiten contra el dealer y no directamente entre ellos.
+
+
+VALOR DE LAS CARTAS
+
+- Las cartas del 2 al 10 tienen el valor indicado en la carta.
+- J, Q y K tienen un valor de 10.
+- El As puede valer 1 u 11, dependiendo de cuál valor sea más conveniente para la mano.
+- Si las primeras dos cartas suman 21, se obtiene Blackjack.
+
+
+INICIO DE LA RONDA
+
+Al comenzar una ronda, cada jugador recibe dos cartas y el dealer también recibe dos cartas.
+
+Las cartas de los jugadores se muestran en pantalla. El dealer mantiene una de sus cartas oculta hasta que todos los jugadores terminan su turno.
+
+
+TURNO DEL JUGADOR
+
+Durante su turno, cada jugador puede elegir entre:
+
+PEDIR:
+Recibe una carta adicional y su valor se agrega al total de la mano.
+
+PLANTARSE:
+El jugador conserva su mano actual y termina su turno.
+
+Si el jugador llega exactamente a 21, su turno termina y continúa el siguiente jugador.
+
+Si el valor de la mano supera 21, el jugador se pasa y pierde la ronda.
+
+
+TURNO DEL DEALER
+
+Después de que todos los jugadores terminan sus turnos, el dealer revela su carta oculta.
+
+El dealer debe pedir cartas mientras tenga un valor menor a 17.
+
+Cuando el dealer obtiene 17 o más, deja de pedir cartas.
+
+Si el dealer supera 21, se pasa.
+
+
+RESULTADOS
+
+Al finalizar el turno del dealer, se compara su mano con la de cada jugador.
+
+- Si el jugador supera 21, pierde.
+- Si el dealer supera 21 y el jugador no, gana el jugador.
+- Si el jugador tiene un valor mayor que el dealer sin superar 21, gana el jugador.
+- Si el dealer tiene un valor mayor sin superar 21, gana el dealer.
+- Si ambos tienen el mismo valor, la ronda termina en empate.
+
+
+NUEVA RONDA
+
+Al terminar una ronda se puede seleccionar OTRA RONDA para continuar jugando.
+
+Las cartas utilizadas no regresan inmediatamente al mazo. Las siguientes rondas continúan utilizando el mismo mazo.
+
+Cuando quedan pocas cartas disponibles, se utiliza un mazo nuevo antes de comenzar la siguiente ronda.
