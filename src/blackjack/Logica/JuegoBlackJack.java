@@ -2,6 +2,7 @@ package blackjack.Logica;
 
 import DeckOfCards.CartaInglesa;
 import DeckOfCards.Mazo;
+import Estructuras.Pila;
 
 import java.util.ArrayList;
 
@@ -10,6 +11,7 @@ public class JuegoBlackJack {
     private ArrayList<Jugador> jugadors;
     private Dealer dealer;
     private Mazo mazo;
+    private Pila<CartaInglesa> pilaMazo;
 
     private int cartasUsadas;
     private boolean mazoNuevo;
@@ -27,11 +29,23 @@ public class JuegoBlackJack {
     private void crearMazo() {
 
         mazo = new Mazo();
+        pilaMazo = new Pila<>(TOTAL_CARTAS);
+
+        CartaInglesa carta;
+
+        while ((carta = mazo.obtenerUnaCarta()) != null) {
+            pilaMazo.push(carta);
+        }
+
         cartasUsadas = 0;
     }
 
     private CartaInglesa obtenerCartaMazo() {
-        CartaInglesa carta = mazo.obtenerUnaCarta();
+        if (pilaMazo.isVacio()) {
+            return null;
+        }
+
+        CartaInglesa carta = pilaMazo.pop();
         cartasUsadas++;
         return carta;
     }
@@ -161,9 +175,9 @@ public class JuegoBlackJack {
             int opcion = vista.pedirOPlantarse();
             switch (opcion) {
                 case 1:
-                   // CartaInglesa carta = mazo.obtenerUnaCarta();
-                   // carta.makeFaceUp();
-                   // jugadors.get(i).getManoJugador().addCard(carta);
+                    // CartaInglesa carta = mazo.obtenerUnaCarta();
+                    // carta.makeFaceUp();
+                    // jugadors.get(i).getManoJugador().addCard(carta);
                     CartaInglesa carta = pedirCartaJugador(i);
                     vista.mostrarJugador(jugadors.get(i));
 
@@ -257,12 +271,16 @@ public class JuegoBlackJack {
         //boolean mayorDealer = (valorDealer > valorJugador) ? true : false;
 
 
-        if ((sePasoJugador && dentroDealer) || (valorJugador<valorDealer && valorDealer<=21)) {
-            System.out.println("Dealer le gano a " + jugadors.get(i).getNombreJugador());
-        } else if ((valorDealer == valorJugador) && valorJugador<21) {
-            System.out.println("Dealer tiene tablas con: " + jugadors.get(i).getNombreJugador());
+        if (sePasoJugador) {
+            System.out.println(jugadors.get(i).getNombreJugador() + " PERDIO");
+        } else if (valorDealer > 21) {
+            System.out.println(jugadors.get(i).getNombreJugador() + " GANO");
+        } else if (valorJugador < valorDealer) {
+            System.out.println(jugadors.get(i).getNombreJugador() + " PERDIO");
+        } else if (valorDealer == valorJugador) {
+            System.out.println(jugadors.get(i).getNombreJugador() + " EMPATO");
         } else {
-            System.out.println("Dealer perdio contra: " + jugadors.get(i).getNombreJugador());
+            System.out.println(jugadors.get(i).getNombreJugador() + " GANO");
         }
 
 
@@ -354,6 +372,3 @@ public class JuegoBlackJack {
 
 
 }
-
-
-

@@ -1,8 +1,10 @@
 package solitaire;
 
 import DeckOfCards.CartaInglesa;
+import Estructuras.Pila;
 
 import java.util.ArrayList;
+
 /**
  * Modela el montículo donde se colocan las cartas
  * que se extraen de Draw pile.
@@ -11,21 +13,24 @@ import java.util.ArrayList;
  * @version (2025-2)
  */
 public class WastePile {
-    private ArrayList<CartaInglesa> cartas;
+    private Pila<CartaInglesa> cartas;
 
     public WastePile() {
-        cartas = new ArrayList<>();
+        cartas = new Pila<>(52);
     }
 
     public void addCartas(ArrayList<CartaInglesa> nuevas) {
-        cartas.addAll(nuevas);
+        for (CartaInglesa carta : nuevas) {
+            cartas.push(carta);
+        }
     }
 
     public ArrayList<CartaInglesa> emptyPile() {
         ArrayList<CartaInglesa> pile = new ArrayList<>();
-        if (!cartas.isEmpty()) {
-            pile.addAll(cartas);
-            cartas = new ArrayList<>();
+        if (!cartas.isVacio()) {
+            while (!cartas.isVacio()) {
+                pile.add(0, cartas.pop());
+            }
         }
         return pile;
     }
@@ -36,15 +41,16 @@ public class WastePile {
      */
     public CartaInglesa verCarta() {
         CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.getLast();
+        if (!cartas.isVacio()) {
+            regresar = cartas.peek();
         }
         return regresar;
     }
+
     public CartaInglesa getCarta() {
         CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.removeLast();
+        if (!cartas.isVacio()) {
+            regresar = cartas.pop();
         }
         return regresar;
     }
@@ -52,10 +58,10 @@ public class WastePile {
     @Override
     public String toString() {
         StringBuilder stb = new StringBuilder();
-        if (cartas.isEmpty()) {
+        if (cartas.isVacio()) {
             stb.append("---");
         } else {
-            CartaInglesa regresar = cartas.getLast();
+            CartaInglesa regresar = cartas.peek();
             regresar.makeFaceUp();
             stb.append(regresar.toString());
         }
@@ -63,6 +69,6 @@ public class WastePile {
     }
 
     public boolean hayCartas() {
-        return !cartas.isEmpty();
+        return !cartas.isVacio();
     }
 }

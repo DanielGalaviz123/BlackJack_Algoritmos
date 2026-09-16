@@ -1,6 +1,7 @@
 package solitaire;
 
 import DeckOfCards.CartaInglesa;
+import Estructuras.Pila;
 
 import java.util.ArrayList;
 
@@ -10,12 +11,19 @@ import java.util.ArrayList;
  * @version 2025
  */
 public class DrawPile {
-    private ArrayList<CartaInglesa> cartas;
+    private Pila<CartaInglesa> cartas;
     private int cuantasCartasSeEntregan = 3;
 
     public DrawPile() {
         DeckOfCards.Mazo mazo = new DeckOfCards.Mazo();
-        cartas = mazo.getCartas();
+        ArrayList<CartaInglesa> cartasMazo = mazo.getCartas();
+
+        cartas = new Pila<>(52);
+
+        for (int i = cartasMazo.size() - 1; i >= 0; i--) {
+            cartas.push(cartasMazo.get(i));
+        }
+
         setCuantasCartasSeEntregan(3);
     }
 
@@ -47,7 +55,7 @@ public class DrawPile {
     public ArrayList<CartaInglesa> getCartas(int cantidad) {
         ArrayList<CartaInglesa> retiradas = new ArrayList<>();
         for (int i = 0; i < cantidad; i++) {
-            retiradas.add(cartas.remove(0));
+            retiradas.add(cartas.pop());
         }
         return retiradas;
     }
@@ -63,7 +71,7 @@ public class DrawPile {
         int maximoARetirar = cartas.size() < cuantasCartasSeEntregan ? cartas.size() : cuantasCartasSeEntregan;
 
         for (int i = 0; i < maximoARetirar; i++) {
-            CartaInglesa retirada = cartas.remove(0);
+            CartaInglesa retirada = cartas.pop();
             retirada.makeFaceUp();
             retiradas.add(retirada);
         }
@@ -75,31 +83,35 @@ public class DrawPile {
      * @return true si hay cartas, false si no.
      */
     public boolean hayCartas() {
-        return cartas.size() > 0;
+        return !cartas.isVacio();
     }
 
     public CartaInglesa verCarta() {
         CartaInglesa regresar = null;
-        if (!cartas.isEmpty()) {
-            regresar = cartas.getLast();
+        if (!cartas.isVacio()) {
+            regresar = cartas.peek();
         }
         return regresar;
     }
+
     /**
      * Agrega las cartas recibidas al monton y las voltea
      * para que no se vean las caras.
      * @param cartasAgregar cartas que se agregan
      */
     public void recargar(ArrayList<CartaInglesa> cartasAgregar) {
-        cartas = cartasAgregar;
-        for (CartaInglesa aCarta : cartas) {
-            aCarta.makeFaceDown();
+        cartas = new Pila<>(52);
+
+        for (int i = cartasAgregar.size() - 1; i >= 0; i--) {
+            CartaInglesa carta = cartasAgregar.get(i);
+            carta.makeFaceDown();
+            cartas.push(carta);
         }
     }
 
     @Override
     public String toString() {
-        if (cartas.isEmpty()) {
+        if (cartas.isVacio()) {
             return "-E-";
         }
         return "@";
