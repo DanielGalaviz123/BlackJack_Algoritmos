@@ -86,4 +86,13 @@ public class Mano {
     public ArrayList<CartaInglesa> getMano(){
         return mano;
     }
+
+    public CartaInglesa removerUltimaCarta() {
+        if (mano.isEmpty()) {
+            return null;
+        }
+
+        return mano.removeLast();
+    }
+
 }

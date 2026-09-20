@@ -26,14 +26,15 @@ public class VistaConsola {
         do {
             System.out.println("1. Pedir carta");
             System.out.println("2. Plantarse");
+            System.out.println("3. Undo");
             System.out.print("Selecciona una opcion: ");
             opcion = scanner.nextInt();
 
-            if (opcion != 1 && opcion != 2) {
+            if (opcion != 1 && opcion != 2 && opcion != 3) {
                 System.out.println("Opcion no valida.");
             }
 
-        } while (opcion != 1 && opcion != 2);
+        } while (opcion != 1 && opcion != 2 && opcion != 3);
 
         return opcion;
     }

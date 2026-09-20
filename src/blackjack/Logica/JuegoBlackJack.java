@@ -13,6 +13,9 @@ public class JuegoBlackJack {
     private Mazo mazo;
     private Pila<CartaInglesa> pilaMazo;
 
+    //pila undo
+    private Pila<Movimiento> pilaUndo;
+
     private int cartasUsadas;
     private boolean mazoNuevo;
 
@@ -42,7 +45,8 @@ public class JuegoBlackJack {
 
     private CartaInglesa obtenerCartaMazo() {
         if (pilaMazo.isVacio()) {
-            return null;
+            crearMazo();
+            mazoNuevo = true;
         }
 
         CartaInglesa carta = pilaMazo.pop();
@@ -78,23 +82,23 @@ public class JuegoBlackJack {
             }
             //agregar carta a dealer
             CartaInglesa carta = obtenerCartaMazo();
-            if(i==0) {
+            if (i == 0) {
                 carta.makeFaceUp();
             }
-            dealer.getManoDealer().addCard(carta);
 
+            dealer.getManoDealer().addCard(carta);
         }
     }
-
-
 
 
     private void creacionObjetos(int cantidad, String[] nombres) {
         crearMazo();
         crearDealer();
         crearJugadores(cantidad, nombres);
-    }
 
+        //Pila para guardar los movimientos que se pueden deshacer
+        pilaUndo = new Pila<>(TOTAL_CARTAS);
+    }
 
 
     public void flujoJuego(int cantidad, String[] nombres) {
@@ -135,8 +139,6 @@ public class JuegoBlackJack {
     }
 
 
-
-
    /*think
    the entire flow of de game
 1. Create players
@@ -147,8 +149,6 @@ public class JuegoBlackJack {
 5. Switch turns and verify winners
 6. Clear players' hands
 7. Repeat cycle
-
-
     */
 
 
@@ -173,11 +173,14 @@ public class JuegoBlackJack {
             }
 
             int opcion = vista.pedirOPlantarse();
+
             switch (opcion) {
+
                 case 1:
                     // CartaInglesa carta = mazo.obtenerUnaCarta();
                     // carta.makeFaceUp();
                     // jugadors.get(i).getManoJugador().addCard(carta);
+
                     CartaInglesa carta = pedirCartaJugador(i);
                     vista.mostrarJugador(jugadors.get(i));
 
@@ -189,13 +192,27 @@ public class JuegoBlackJack {
                     break;
 
                 case 2:
-                    System.out.println("Te plantaste en " + jugadors.get(i).getManoJugador().cacularValor());
+                    System.out.println("Te plantaste en " +
+                            jugadors.get(i).getManoJugador().cacularValor());
+
                     turnoActivo = false;
+                    break;
+
+                case 3:
+                    Movimiento movimiento = undo();
+
+                    if (movimiento == null) {System.out.println("No hay movimientos para deshacer");
+                    } else {
+                        System.out.println("Se deshizo la carta: " + movimiento.getCarta());
+
+                        vista.mostrarJugador(jugadors.get(movimiento.getJugador()));
+                    }
                     break;
 
                 default:
                     System.out.println("Valor no valido");
             }
+
         } while (turnoActivo);
 
     }
@@ -224,37 +241,42 @@ public class JuegoBlackJack {
 
         int valorinicial = dealer.getManoDealer().cacularValor();
 
-
         if (valorinicial >= 17) {
             System.out.println("Dealer se planta en " + dealer.getManoDealer().cacularValor());
+
             //System.out.println("Dealer se planta en " + dealer.getManoDealer().cacularValor());
             controlDealer = false;
+
         } else {
+
             do {
 
                 CartaInglesa carta = obtenerCartaMazo();
                 carta.makeFaceUp();
                 dealer.getManoDealer().addCard(carta);
                 vista.mostrarDealer(dealer);
+
                 if (dealer.getManoDealer().sePaso()) {
+
                     System.out.println("El dealer se paso con " + dealer.getManoDealer().cacularValor());
+
                     //dealer.getManoDealer().getMano().clear();
                     controlDealer = false;
+
                 } else if (dealer.getManoDealer().cacularValor() >= 17) {
 
                     System.out.println("El dealer se planta en " + dealer.getManoDealer().cacularValor());
+
                     controlDealer = false;
 
                 } else {
                     controlDealer = true;
-
-
                 }
 
             } while (controlDealer);
-
         }
     }
+
 
     public void comprobarValorFinal(int i) {
         /*
@@ -263,28 +285,33 @@ public class JuegoBlackJack {
         Comparar cada valor contra el dealer
          */
 
-        int valorDealer = dealer.getManoDealer().cacularValor();
-        int valorJugador = jugadors.get(i).getManoJugador().cacularValor();
+        int valorDealer =dealer.getManoDealer().cacularValor();
 
-        boolean dentroDealer = (valorDealer <= 21 ) ? true : false;
-        boolean sePasoJugador = (valorJugador >= 22) ? true : false;
+        int valorJugador =jugadors.get(i).getManoJugador().cacularValor();
+
+        boolean dentroDealer =(valorDealer <= 21) ? true : false;
+
+        boolean sePasoJugador =(valorJugador >= 22) ? true : false;
+
         //boolean mayorDealer = (valorDealer > valorJugador) ? true : false;
-
 
         if (sePasoJugador) {
             System.out.println(jugadors.get(i).getNombreJugador() + " PERDIO");
+
         } else if (valorDealer > 21) {
             System.out.println(jugadors.get(i).getNombreJugador() + " GANO");
+
         } else if (valorJugador < valorDealer) {
             System.out.println(jugadors.get(i).getNombreJugador() + " PERDIO");
+
         } else if (valorDealer == valorJugador) {
             System.out.println(jugadors.get(i).getNombreJugador() + " EMPATO");
+
         } else {
             System.out.println(jugadors.get(i).getNombreJugador() + " GANO");
         }
-
-
     }
+
 
     //esto para enlace
 
@@ -301,16 +328,46 @@ public class JuegoBlackJack {
         return dealer;
     }
 
+
     public CartaInglesa pedirCartaJugador(int i) {
+
         CartaInglesa carta = obtenerCartaMazo();
         carta.makeFaceUp();
+
         jugadors.get(i).getManoJugador().addCard(carta);
+
+        //Guardar jugador y carta en la pila de Undo
+        pilaUndo.push(new Movimiento(i, carta));
+
         return carta;
     }
+
+
+    public Movimiento undo() {
+
+        if (pilaUndo.isVacio()) {
+            return null;
+        }
+
+        Movimiento movimiento = pilaUndo.pop();
+
+        int jugador = movimiento.getJugador();
+
+        jugadors.get(jugador).getManoJugador().removerUltimaCarta();
+
+        return movimiento;
+    }
+
+
+    public void limpiarUndo() {
+        pilaUndo.clear();
+    }
+
 
     public String obtenerResultado(Jugador jugador) {
 
         int valorJugador = jugador.getManoJugador().cacularValor();
+
         int valorDealer = dealer.getManoDealer().cacularValor();
 
         if (valorJugador > 21) {
@@ -332,6 +389,7 @@ public class JuegoBlackJack {
         return "EMPATE";
     }
 
+
     public void nuevaRonda() {
         System.out.println("\n---NUEVA RONDA---");
         System.out.println("Cartas restantes antes: " + getCartasRestantes());
@@ -342,13 +400,18 @@ public class JuegoBlackJack {
 
         dealer.getManoDealer().limpiarMano();
 
+        //solo se limpia Undo cuando comienza otra ronda
+        limpiarUndo();
+
         int cartasRestantes = TOTAL_CARTAS - cartasUsadas;
+
         int limite = (int) (TOTAL_CARTAS * PORCENTAJE_CAMBIO_MAZO);
 
         if (cartasRestantes <= limite) {
             System.out.println("Barajando mazo nuevo...");
             crearMazo();
             mazoNuevo = true;
+
         } else {
             System.out.println("Se continua utilizando el mismo mazo.");
             mazoNuevo = false;
@@ -359,6 +422,7 @@ public class JuegoBlackJack {
         System.out.println("Cartas restantes despues de repartir: " + getCartasRestantes());
     }
 
+
     public boolean isMazoNuevo() {
         return mazoNuevo;
     }
@@ -367,8 +431,4 @@ public class JuegoBlackJack {
     public int getCartasRestantes() {
         return TOTAL_CARTAS - cartasUsadas;
     }
-
-
-
-
 }

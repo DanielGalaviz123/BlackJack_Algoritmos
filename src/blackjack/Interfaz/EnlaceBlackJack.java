@@ -4,6 +4,7 @@ import DeckOfCards.CartaInglesa;
 import blackjack.Logica.Dealer;
 import blackjack.Logica.JuegoBlackJack;
 import blackjack.Logica.Jugador;
+import blackjack.Logica.Movimiento;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,17 @@ public class EnlaceBlackJack {
 
     public CartaInglesa pedirCarta() {
         return juego.pedirCartaJugador(turnoActual);
+    }
+
+    public Movimiento undo() {
+
+        Movimiento movimiento = juego.undo();
+
+        if (movimiento != null) {
+            turnoActual = movimiento.getJugador();
+        }
+
+        return movimiento;
     }
 
     public boolean jugadorSePaso() {
