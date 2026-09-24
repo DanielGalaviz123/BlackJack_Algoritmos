@@ -10,9 +10,7 @@ public class Pila<T> {
         tope = -1;
     }
 
-    public boolean isLLeno(){
-        return tope == pila.length - 1 ? true : false;
-    }
+    public boolean isLLeno(){return tope == pila.length - 1 ? true : false;}
 
     public boolean isVacio(){
         return tope == -1 ? true : false;

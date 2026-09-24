@@ -50,6 +50,9 @@ public class EnlaceBlackJack {
     }
 
     public boolean siguienteJugador() {
+
+        juego.guardarPasoJugador(turnoActual);
+
         turnoActual++;
         return turnoActual < juego.getJugadores().size();
     }

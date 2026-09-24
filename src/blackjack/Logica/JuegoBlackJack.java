@@ -330,32 +330,34 @@ public class JuegoBlackJack {
 
 
     public CartaInglesa pedirCartaJugador(int i) {
-
         CartaInglesa carta = obtenerCartaMazo();
         carta.makeFaceUp();
-
         jugadors.get(i).getManoJugador().addCard(carta);
 
         //Guardar jugador y carta en la pila de Undo
-        pilaUndo.push(new Movimiento(i, carta));
+        pilaUndo.push(new Movimiento(i, carta, "PEDIR"));
 
         return carta;
     }
 
 
     public Movimiento undo() {
-
         if (pilaUndo.isVacio()) {
             return null;
         }
 
         Movimiento movimiento = pilaUndo.pop();
+        int jugador= movimiento.getJugador();
 
-        int jugador = movimiento.getJugador();
-
-        jugadors.get(jugador).getManoJugador().removerUltimaCarta();
+        if (movimiento.getTipo().equals("PEDIR")) {
+            jugadors.get(jugador).getManoJugador().removerUltimaCarta();
+        }
 
         return movimiento;
+    }
+
+    public void guardarPasoJugador(int jugador) {
+        pilaUndo.push(new Movimiento(jugador, null, "PASAR"));
     }
 
 
